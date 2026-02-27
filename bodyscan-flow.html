@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BodyScan Flow - Analisis Tubuh Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f4f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --fg-primary: #1a1a1a;
+            --fg-secondary: #4a5568;
+            --fg-muted: #718096;
+            --accent: #0d9488;
+            --accent-dark: #0f766e;
+            --accent-glow: rgba(13, 148, 136, 0.25);
+            --accent-light: #f0fdfa;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --success: #059669;
+            --info: #0284c7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { font-size: 19px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--fg-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            font-weight: 600;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.02em; color: var(--fg-primary); }
+
+        .bg-gradient-mesh {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background: radial-gradient(ellipse 100% 70% at 50% 0%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 35%);
+        }
+
+        /* Navigation */
+        .nav-container { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .nav-content { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; min-height: 74px; gap: 0.75rem; }
+        .nav-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.25rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; color: var(--fg-primary); font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; cursor: pointer; transition: all 0.15s ease; min-height: 52px; min-width: 52px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .nav-btn:active { transform: scale(0.97); border-color: var(--accent); background: var(--accent-light); }
+        .nav-btn svg { width: 24px; height: 24px; flex-shrink: 0; }
+        .nav-back-btn span { display: none; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; flex-shrink: 0; }
+        .logo-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px var(--accent-glow); }
+        .logo-icon svg { width: 28px; height: 28px; }
+        .logo-text { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.25rem; color: var(--fg-primary); }
+
+        /* Main Content */
+        .main-content { position: relative; z-index: 1; padding-top: 76px; padding-bottom: 2.5rem; }
+        .hero-section { padding: 2rem 1.25rem 1.5rem; text-align: center; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.625rem; padding: 0.625rem 1.25rem; background: var(--accent-light); border: 2px solid rgba(13, 148, 136, 0.2); border-radius: 50px; font-size: 0.95rem; font-weight: 700; color: var(--accent-dark); margin-bottom: 1.25rem; }
+        .hero-badge-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
+        .hero-title { font-size: 2rem; line-height: 1.25; margin-bottom: 1rem; font-weight: 700; color: var(--fg-primary); }
+        .hero-title-accent { color: var(--accent-dark); }
+        .hero-subtitle { font-size: 1.1rem; color: var(--fg-secondary); line-height: 1.7; font-weight: 600; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-badge, .hero-title, .hero-subtitle { opacity: 0; animation: fadeInUp 0.5s ease forwards; }
+        .hero-title { animation-delay: 0.08s; }
+        .hero-subtitle { animation-delay: 0.16s; }
+
+        /* Tab Navigation */
+        .tab-nav { position: sticky; top: 76px; z-index: 50; background: rgba(244, 247, 250, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.625rem 1rem; }
+        .tab-nav-inner { display: flex; gap: 0.5rem; background: var(--bg-secondary); padding: 0.375rem; border-radius: 14px; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 1rem 0.75rem; background: transparent; border: none; border-radius: 12px; color: var(--fg-muted); font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; min-height: 54px; }
+        .tab-btn:active { background: rgba(0,0,0,0.03); }
+        .tab-btn.active { color: white; background: var(--accent); box-shadow: 0 3px 10px var(--accent-glow); }
+
+        .tab-content { padding: 1.25rem 1rem; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeInUp 0.35s ease; }
+
+        /* Cards */
+        .point-adjustment-container { display: flex; flex-direction: column; gap: 1.25rem; }
+        .card-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 1.25rem; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .card-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 18px 18px 0 0; }
+
+        .diagram-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .diagram-title { font-size: 1.25rem; font-weight: 700; color: var(--fg-primary); }
+        .diagram-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 700; color: var(--success); }
+
+        .body-svg-container { display: flex; justify-content: center; align-items: center; padding: 0.75rem 0; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .body-svg { max-width: 200px; height: auto; }
+        .body-outline { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 2; }
+
+        .scan-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 500; stroke-dashoffset: 500; animation: scanLine 3s linear infinite; }
+        @keyframes scanLine { 0% { stroke-dashoffset: 500; } 100% { stroke-dashoffset: 0; } }
+
+        .adjustable-point { cursor: pointer; transition: transform 0.15s; }
+        .adjustable-point:active { transform: scale(1.1); }
+        .point-indicator { fill: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); }
+        .point-ring { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0.4; animation: pointRing 2s ease infinite; }
+        @keyframes pointRing { 0%, 100% { r: 12; opacity: 0.4; } 50% { r: 16; opacity: 0.15; } }
+        .point-label { fill: var(--fg-primary); font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; }
+
+        /* Controls */
+        .controls-header { margin-bottom: 1.5rem; text-align: center; }
+        .controls-title { font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700; }
+        .controls-subtitle { font-size: 1rem; color: var(--fg-secondary); font-weight: 600; }
+        .control-group { margin-bottom: 1.5rem; }
+        .control-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .control-label-text { font-size: 1.05rem; font-weight: 700; color: var(--fg-primary); }
+        .control-value { font-family: 'Space Grotesk', monospace; font-size: 1rem; font-weight: 700; color: var(--accent-dark); background: var(--accent-light); padding: 0.3rem 0.75rem; border-radius: 8px; border: 1px solid rgba(13, 148, 136, 0.2); }
+        .control-slider { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; appearance: none; -webkit-appearance: none; cursor: pointer; }
+        .control-slider::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 32px; height: 32px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px var(--accent-glow); border: 3px solid white; }
+
+        .point-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.625rem; margin-bottom: 1.5rem; }
+        .point-btn { padding: 1rem 0.625rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; color: var(--fg-secondary); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; min-height: 56px; }
+        .point-btn:active { border-color: var(--accent); color: var(--fg-primary); background: white; }
+        .point-btn.selected { background: var(--accent-light); border-color: var(--accent); color: var(--accent-dark); }
+
+        .action-buttons { display: flex; gap: 0.875rem; margin-top: 1.75rem; }
+        .btn-primary { flex: 1; padding: 1.125rem; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); border: none; border-radius: 14px; color: white; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 14px var(--accent-glow); transition: transform 0.15s; min-height: 58px; }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-secondary { padding: 1.125rem 1.5rem; background: white; border: 2px solid var(--border); border-radius: 14px; color: var(--fg-secondary); font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.15s; min-height: 58px; }
+        .btn-secondary:active { border-color: #cbd5e1; color: var(--fg-primary); }
+
+        /* Report Styles */
+        .report-summary { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); border-radius: 18px; padding: 1.5rem; color: white; margin-bottom: 1.25rem; }
+        .report-summary-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .report-summary-title { font-size: 1.1rem; opacity: 0.9; font-weight: 600; }
+        .report-summary-date { font-size: 0.85rem; opacity: 0.75; background: rgba(255,255,255,0.15); padding: 0.25rem 0.75rem; border-radius: 20px; }
+        .report-score-big { font-family: 'Space Grotesk', sans-serif; font-size: 3.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; }
+        .report-score-label { font-size: 0.95rem; opacity: 0.85; }
+        .report-score-bar { height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin-top: 1rem; overflow: hidden; }
+        .report-score-fill { height: 100%; background: white; border-radius: 4px; transition: width 1s ease; }
+
+        .report-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1.25rem; }
+        .report-stat { text-align: center; padding: 0.75rem; background: rgba(255,255,255,0.1); border-radius: 12px; }
+        .report-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; }
+        .report-stat-label { font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem; }
+
+        .chart-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .chart-title { font-size: 1.1rem; font-weight: 700; color: var(--fg-primary); }
+        .chart-legend { display: flex; gap: 0.75rem; }
+        .chart-legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8rem; color: var(--fg-muted); font-weight: 600; }
+        .chart-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 180px; padding: 0 0.5rem; border-bottom: 2px solid var(--border); }
+        .chart-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .chart-bar-wrapper { width: 100%; display: flex; justify-content: center; align-items: flex-end; height: 140px; }
+        .chart-bar { width: 28px; border-radius: 6px 6px 0 0; transition: height 0.8s ease; cursor: pointer; position: relative; }
+        .chart-bar:hover { opacity: 0.85; }
+        .chart-bar.success { background: linear-gradient(180deg, var(--success) 0%, #047857 100%); }
+        .chart-bar.warning { background: linear-gradient(180deg, var(--warning) 0%, #b45309 100%); }
+        .chart-bar.danger { background: linear-gradient(180deg, var(--danger) 0%, #b91c1c 100%); }
+        .chart-bar-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--fg-primary); margin-bottom: 0.25rem; }
+        .chart-bar-label { font-size: 0.7rem; color: var(--fg-muted); margin-top: 0.5rem; text-align: center; font-weight: 600; max-width: 50px; }
+
+        .insights-section { margin-bottom: 1.25rem; }
+        .insight-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 0.75rem; display: flex; gap: 1rem; align-items: flex-start; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .insight-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .insight-icon.success { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+        .insight-icon.warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+        .insight-icon.danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+        .insight-icon.info { background: rgba(2, 132, 199, 0.1); color: var(--info); }
+        .insight-icon svg { width: 24px; height: 24px; }
+        .insight-content { flex: 1; }
+        .insight-title { font-size: 1rem; font-weight: 700; color: var(--fg-primary); margin-bottom: 0.25rem; }
+        .insight-desc { font-size: 0.9rem; color: var(--fg-secondary); line-height: 1.5; }
+
+        .report-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .report-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .report-card:active { border-color: var(--accent); transform: scale(0.98); }
+        .report-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+        .report-card-title { font-size: 1rem; font-weight: 700; color: var(--fg-secondary); }
+        .report-card-badge { padding: 0.3rem 0.625rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .badge-success { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+        .report-card-value { font-family: 'Space Grotesk', sans-serif; font-size: 2.25rem; font-weight: 700; line-height: 1; margin-bottom: 0.375rem; color: var(--fg-primary); }
+        .report-card-unit { font-size: 1rem; color: var(--fg-muted); font-weight: 600; }
+        .report-card-change { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 700; }
+        .change-positive { color: var(--success); }
+        .change-negative { color: var(--danger); }
+        .progress-ring { width: 60px; height: 60px; }
+        .progress-ring-bg { stroke: #e2e8f0; }
+        .progress-ring-fill { transition: stroke-dashoffset 0.8s ease; transform: rotate(-90deg); transform-origin: center; }
+
+        .full-report-section { margin-top: 1.5rem; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .section-title { font-size: 1.25rem; font-weight: 700; }
+        .export-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--accent-light); border: 2px solid rgba(13, 148, 136, 0.2); border-radius: 12px; color: var(--accent-dark); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; min-height: 48px; }
+        .export-btn:active { background: #ccfbf1; }
+        .export-btn svg { width: 20px; height: 20px; }
+
+        .report-table-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow-x: auto; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .report-table { width: 100%; border-collapse: collapse; min-width: 520px; }
+        .report-table th, .report-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 1rem; font-weight: 600; }
+        .report-table th { background: #f8fafc; font-size: 0.85rem; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; position: sticky; top: 0; }
+        .report-table tr:last-child td { border-bottom: none; }
+        .report-table tr:active td { background: #f8fafc; }
+        .table-region { font-weight: 700; color: var(--fg-primary); }
+        .table-status { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .status-dot.success { background: var(--success); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2); }
+        .status-dot.warning { background: var(--warning); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2); }
+        .status-dot.danger { background: var(--danger); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2); }
+        .score-cell { display: flex; align-items: center; gap: 0.75rem; }
+        .score-mini-bar { width: 60px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+        .score-mini-fill { height: 100%; border-radius: 3px; }
+
+        .recommendations-section { margin-top: 1.5rem; }
+        .recommendation-card { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 16px; padding: 1.25rem; margin-bottom: 0.75rem; }
+        .recommendation-card.urgent { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-color: #ef4444; }
+        .recommendation-card.success { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-color: #10b981; }
+        .recommendation-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .recommendation-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.5); }
+        .recommendation-icon svg { width: 20px; height: 20px; }
+        .recommendation-title { font-size: 1.05rem; font-weight: 700; color: var(--fg-primary); }
+        .recommendation-text { font-size: 0.95rem; color: var(--fg-secondary); line-height: 1.6; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 2rem; left: 1rem; right: 1rem; background: white; border: 1px solid var(--accent); border-radius: 14px; padding: 1.125rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1000; opacity: 0; transform: translateY(100px); transition: all 0.25s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast-icon { width: 26px; height: 26px; color: var(--accent); flex-shrink: 0; }
+        .toast-message { font-size: 1.05rem; font-weight: 700; color: var(--fg-primary); }
+
+        ::-webkit-scrollbar { width: 0; height: 0; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient-mesh" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-container" role="navigation">
+        <div class="nav-content">
+            <a href="bodyscan.html" class="nav-btn nav-back-btn" aria-label="Kembali">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <span>Kembali</span>
+            </a>
+            <a href="#" class="logo" aria-label="BodyScan Flow">
+                <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10  6.9 10.9 6 12 6ZM12 18C9.3 18 6.9 16.4 5.7 14.2C5.73 11.93 10.2 10.7 12 10.7C13.79 10.7 18.27 11.93 18.3 14.2C17.1 16.4 14.7 18 12 18Z" fill="white"/></svg></div>
+                <span class="logo-text">BodyScan Flow</span>
+            </a>
+            
+                
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="hero-badge"><span class="hero-badge-dot"></span>Sistem Aktif</div>
+            <h1 class="hero-title">Analisis Tubuh<br><span class="hero-title-accent">Digital Presisi</span></h1>
+            <p class="hero-subtitle">Platform analisis tubuh digital dengan teknologi scanning canggih. Sesuaikan titik analisis frontal dan dapatkan laporan komprehensif secara real-time.</p>
+        </section>
+
+        <div class="tab-nav">
+            <div class="tab-nav-inner" role="tablist">
+                <button class="tab-btn active" role="tab" aria-selected="true" id="tab-adjustment">Point Adjustment</button>
+                <button class="tab-btn" role="tab" aria-selected="false" id="tab-report">Analisis Report</button>
+            </div>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-panel active" id="panel-adjustment">
+                <div class="point-adjustment-container">
+                    <div class="card-wrapper">
+                        <div class="diagram-header">
+                            <h3 class="diagram-title">Diagram Frontal</h3>
+                            <div class="diagram-status">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                                Real-time
+                            </div>
+                        </div>
+                        <div class="body-svg-container">
+                            <svg class="body-svg" viewBox="0 0 200 400" width="200" height="400">
+                                <defs>
+                                    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#f1f5f9"/>
+                                        <stop offset="100%" style="stop-color:#e2e8f0"/>
+                                    </linearGradient>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                </defs>
+                                
+                                <path class="body-outline" d="
+                                    M100 20 C115 20 125 30 125 50 C125 65 115 75 100 75 C85 75 75 65 75 50 C75 30 85 20 100 20
+                                    M100 75 L100 85
+                                    M85 85 L60 160 L50 240
+                                    M115 85 L140 160 L150 240
+                                    M100 85 L90 150 L85 240 L75 340
+                                    M100 85 L110 150 L115 240 L125 340
+                                "/>
+                                
+                                <line class="scan-line" x1="30" y1="0" x2="170" y2="0">
+                                    <animate attributeName="y1" values="0;400;0" dur="4s" repeatCount="indefinite"/>
+                                    <animate attributeName="y2" values="0;400;0" dur="4s" repeatCount="indefinite"/>
+                                </line>
+                                
+                                <g class="adjustable-point" id="point-head" data-point="head" transform="translate(100, 45)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Kepala</text>
+                                </g>
+                                <g class="adjustable-point" id="point-chest" data-point="chest" transform="translate(100, 130)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Dada</text>
+                                </g>
+                                <g class="adjustable-point" id="point-abdomen" data-point="abdomen" transform="translate(100, 180)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Perut</text>
+                                </g>
+                                <g class="adjustable-point" id="point-left-arm" data-point="leftArm" transform="translate(55, 150)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Leng. Kiri</text>
+                                </g>
+                                <g class="adjustable-point" id="point-right-arm" data-point="rightArm" transform="translate(145, 150)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Leng. Kanan</text>
+                                </g>
+                                <g class="adjustable-point" id="point-left-leg" data-point="leftLeg" transform="translate(80, 290)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Kaki Kiri</text>
+                                </g>
+                                <g class="adjustable-point" id="point-right-leg" data-point="rightLeg" transform="translate(120, 290)">
+                                    <circle class="point-ring" r="12"/><circle class="point-indicator" r="7" filter="url(#glow)"/>
+                                    <text class="point-label" x="16" y="4">Kaki Kanan</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="card-wrapper">
+                        <div class="controls-header">
+                            <h3 class="controls-title">Kontrol Analisis</h3>
+                            <p class="controls-subtitle">Sesuaikan parameter titik analisis</p>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"><span class="control-label-text">Pilih Titik Analisis</span></label>
+                            <div class="point-selector">
+                                <button class="point-btn selected" data-target="head">Kepala</button>
+                                <button class="point-btn" data-target="chest">Dada</button>
+                                <button class="point-btn" data-target="abdomen">Perut</button>
+                                <button class="point-btn" data-target="leftArm">Lengan Kiri</button>
+                                <button class="point-btn" data-target="rightArm">Lengan Kanan</button>
+                                <button class="point-btn" data-target="leftLeg">Kaki Kiri</button>
+                                <button class="point-btn" data-target="rightLeg">Kaki Kanan</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"><span class="control-label-text">Posisi X</span><span class="control-value" id="xValue">100</span></label>
+                            <input type="range" class="control-slider" id="xSlider" min="30" max="170" value="100" aria-label="Posisi X">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><span class="control-label-text">Posisi Y</span><span class="control-value" id="yValue">45</span></label>
+                            <input type="range" class="control-slider" id="ySlider" min="20" max="350" value="45" aria-label="Posisi Y">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><span class="control-label-text">Intensitas Analisis</span><span class="control-value" id="intensityValue">75%</span></label>
+                            <input type="range" class="control-slider" id="intensitySlider" min="0" max="100" value="75" aria-label="Intensitas">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><span class="control-label-text">Kedalaman Scan</span><span class="control-value" id="depthValue">50mm</span></label>
+                            <input type="range" class="control-slider" id="depthSlider" min="10" max="100" value="50" aria-label="Kedalaman">
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-primary" id="applyBtn">Terapkan Perubahan</button>
+                            <button class="btn-secondary" id="resetBtn">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-report">
+                <!-- Report Summary -->
+                <div class="report-summary" id="reportSummary"></div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Skor Per Region</h3>
+                        <div class="chart-legend">
+                            <div class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--success);"></span>Baik</div>
+                            <div class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--warning);"></span>Perhatian</div>
+                            <div class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--danger);"></span>Kritis</div>
+                        </div>
+                    </div>
+                    <div class="chart-bars" id="chartBars"></div>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="insights-section" id="insightsSection"></div>
+
+                <!-- Metric Cards -->
+                <div class="report-grid" id="reportGrid"></div>
+
+                <!-- Recommendations -->
+                <div class="recommendations-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Rekomendasi</h3>
+                    </div>
+                    <div id="recommendationsContainer"></div>
+                </div>
+
+                <!-- Full Report Table -->
+                <div class="full-report-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Detail Per Region</h3>
+                        <button></button>
+                        
+                    </div>
+                    <div class="report-table-wrapper">
+                        <table class="report-table">
+                            <thead><tr><th>Region</th><th>Skor</th><th>Status</th><th>Catatan</th></tr></thead>
+                            <tbody id="reportTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast" role="alert">
+        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span class="toast-message" id="toastMessage">Berhasil</span>
+    </div>
+
+    <script>
+        // ========== DATA ==========
+        const reportData = [
+            { region: 'Kepala', score: 92, status: 'success', note: 'Tidak ada anomali, kondisi sangat baik', trend: '+2' },
+            { region: 'Dada', score: 68, status: 'warning', note: 'Detak jantung sedikit tidak teratur', trend: '-5' },
+            { region: 'Perut', score: 85, status: 'success', note: 'Sistem pencernaan normal', trend: '+1' },
+            { region: 'Lengan Kiri', score: 78, status: 'warning', note: 'Ketegangan otot terdeteksi', trend: '0' },
+            { region: 'Lengan Kanan', score: 90, status: 'success', note: 'Fungsi motorik optimal', trend: '+3' },
+            { region: 'Kaki Kiri', score: 55, status: 'danger', note: 'Sirkulasi darah kurang optimal', trend: '-8' },
+            { region: 'Kaki Kanan', score: 95, status: 'success', note: 'Kondisi sangat baik', trend: '+4' }
+        ];
+
+        const metricCards = [
+            { title: 'Skor Keseluruhan', value: '79', unit: '/100', change: '+1.5%', positive: true, badge: 'success', progress: 79 },
+            { title: 'Region Normal', value: '4', unit: '/7', change: '0', positive: true, badge: 'success', progress: 57 },
+            { title: 'Akurasi Scan', value: '98.5', unit: '%', change: '+0.3%', positive: true, badge: 'success', progress: 98 },
+            { title: 'Waktu Analisis', value: '12.4', unit: 'detik', change: '-1.2s', positive: true, badge: 'success', progress: 0 }
+        ];
+
+        const insights = [
+            { type: 'danger', title: 'Kaki Kiri Memerlukan Perhatian', desc: 'Sirkulasi darah di area kaki kiri menunjukkan penurunan 8 poin. Disarankan untuk berkonsultasi dengan spesialis.' },
+            { type: 'warning', title: 'Ketegangan Otot Terdeteksi', desc: 'Area dada dan lengan kiri menunjukkan indikasi ketegangan. Pertimbangkan latihan peregangan rutin.' },
+            { type: 'success', title: 'Kondisi Kepala Optimal', desc: 'Tidak ada anomali pada area kepala. Pertahankan pola tidur dan konsumsi air yang cukup.' },
+            { type: 'info', title: 'Asimetri Terdeteksi', desc: 'Terdapat perbedaan skor 40 poin antara kaki kiri dan kanan. Disarankan evaluasi lebih lanjut.' }
+        ];
+
+        const recommendations = [
+            { priority: 'urgent', title: 'Pemeriksaan Kaki Kiri', text: 'Segera jadwalkan pemeriksaan dengan dokter spesialis untuk evaluasi sirkulasi darah di area kaki kiri. Skor 55 mengindikasikan kondisi yang memerlukan intervensi medis.' },
+            { priority: 'warning', title: 'Latihan Peregangan', text: 'Lakukan peregangan pagi dan sore hari selama 10-15 menit. Fokus pada area dada, bahu, dan lengan untuk mengurangi ketegangan otot.' },
+            { priority: 'success', title: 'Pertahankan Pola Hidup Sehat', text: 'Kondisi area kepala, perut, lengan kanan, dan kaki kanan menunjukkan hasil yang sangat baik. Lanjutkan pola makan sehat dan olahraga teratur.' }
+        ];
+
+        const pointPositions = {
+            head: { x: 100, y: 45 },
+            chest: { x: 100, y: 130 },
+            abdomen: { x: 100, y: 180 },
+            leftArm: { x: 55, y: 150 },
+            rightArm: { x: 145, y: 150 },
+            leftLeg: { x: 80, y: 290 },
+            rightLeg: { x: 120, y: 290 }
+        };
+
+        // ========== DOM ELEMENTS ==========
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        const pointButtons = document.querySelectorAll('.point-btn');
+        const xSlider = document.getElementById('xSlider');
+        const ySlider = document.getElementById('ySlider');
+        const intensitySlider = document.getElementById('intensitySlider');
+        const depthSlider = document.getElementById('depthSlider');
+        const xValue = document.getElementById('xValue');
+        const yValue = document.getElementById('yValue');
+        const intensityValue = document.getElementById('intensityValue');
+        const depthValue = document.getElementById('depthValue');
+        const applyBtn = document.getElementById('applyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const saveDataBtn = document.getElementById('saveDataBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const reportSummary = document.getElementById('reportSummary');
+        const chartBars = document.getElementById('chartBars');
+        const insightsSection = document.getElementById('insightsSection');
+        const reportGrid = document.getElementById('reportGrid');
+        const reportTableBody = document.getElementById('reportTableBody');
+        const recommendationsContainer = document.getElementById('recommendationsContainer');
+
+        let selectedPoint = 'head';
+
+        // ========== UTILITY FUNCTIONS ==========
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function getScoreStatus(score) {
+            if (score >= 80) return 'success';
+            if (score >= 60) return 'warning';
+            return 'danger';
+        }
+
+        function getScoreLabel(status) {
+            const labels = { success: 'Baik', warning: 'Perhatian', danger: 'Kritis' };
+            return labels[status] || 'Unknown';
+        }
+
+        function formatDate() {
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return now.toLocaleDateString('id-ID', options);
+        }
+
+        function calculateAverageScore() {
+            const total = reportData.reduce((sum, item) => sum + item.score, 0);
+            return Math.round(total / reportData.length);
+        }
+
+        // ========== TAB HANDLING ==========
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                document.getElementById(`panel-${btn.id.replace('tab-', '')}`).classList.add('active');
+            });
+        });
+
+        // ========== POINT ADJUSTMENT ==========
+        function selectPoint(target) {
+            selectedPoint = target;
+            pointButtons.forEach(btn => btn.classList.toggle('selected', btn.dataset.target === target));
+            const pos = pointPositions[target];
+            if (pos) {
+                xSlider.value = pos.x;
+                ySlider.value = pos.y;
+                xValue.textContent = pos.x;
+                yValue.textContent = pos.y;
+            }
+            document.querySelectorAll('.adjustable-point').forEach(p => {
+                const indicator = p.querySelector('.point-indicator');
+                if (indicator) {
+                    indicator.style.transform = p.dataset.point === target ? 'scale(1.3)' : 'scale(1)';
+                }
+            });
+        }
+
+        pointButtons.forEach(btn => btn.addEventListener('click', () => selectPoint(btn.dataset.target)));
+        document.querySelectorAll('.adjustable-point').forEach(p => p.addEventListener('click', () => selectPoint(p.dataset.point)));
+
+        function updatePointPosition() {
+            const idMap = { leftArm: 'left-arm', rightArm: 'right-arm', leftLeg: 'left-leg', rightLeg: 'right-leg' };
+            const point = document.getElementById(`point-${idMap[selectedPoint] || selectedPoint}`);
+            if (point) {
+                const x = parseInt(xSlider.value);
+                const y = parseInt(ySlider.value);
+                point.setAttribute('transform', `translate(${x}, ${y})`);
+                pointPositions[selectedPoint] = { x, y };
+            }
+        }
+
+        xSlider.addEventListener('input', e => { xValue.textContent = e.target.value; updatePointPosition(); });
+        ySlider.addEventListener('input', e => { yValue.textContent = e.target.value; updatePointPosition(); });
+        intensitySlider.addEventListener('input', e => intensityValue.textContent = e.target.value + '%');
+        depthSlider.addEventListener('input', e => depthValue.textContent = e.target.value + 'mm');
+
+        applyBtn.addEventListener('click', () => showToast('Perubahan berhasil diterapkan'));
+        
+        resetBtn.addEventListener('click', () => {
+            Object.assign(pointPositions, {
+                head: { x: 100, y: 45 }, chest: { x: 100, y: 130 }, abdomen: { x: 100, y: 180 },
+                leftArm: { x: 55, y: 150 }, rightArm: { x: 145, y: 150 },
+                leftLeg: { x: 80, y: 290 }, rightLeg: { x: 120, y: 290 }
+            });
+            selectPoint(selectedPoint);
+            intensitySlider.value = 75; depthSlider.value = 50;
+            intensityValue.textContent = '75%'; depthValue.textContent = '50mm';
+            showToast('Pengaturan berhasil direset');
+        });
+
+
+
+        // ========== REPORT GENERATION ==========
+        function generateReportSummary() {
+            if (!reportSummary) return;
+            const avgScore = calculateAverageScore();
+            const normalCount = reportData.filter(r => r.status === 'success').length;
+            const warningCount = reportData.filter(r => r.status === 'warning').length;
+            const dangerCount = reportData.filter(r => r.status === 'danger').length;
+
+            reportSummary.innerHTML = `
+                <div class="report-summary-header">
+                    <div>
+                        <div class="report-summary-title">Skor Kesehatan Keseluruhan</div>
+                        <div class="report-score-big">${avgScore}</div>
+                        <div class="report-score-label">dari 100 poin</div>
+                    </div>
+                    <div class="report-summary-date">${formatDate()}</div>
+                </div>
+                <div class="report-score-bar">
+                    <div class="report-score-fill" style="width: ${avgScore}%;"></div>
+                </div>
+                <div class="report-stats">
+                    <div class="report-stat">
+                        <div class="report-stat-value">${normalCount}</div>
+                        <div class="report-stat-label">Normal</div>
+                    </div>
+                    <div class="report-stat">
+                        <div class="report-stat-value">${warningCount}</div>
+                        <div class="report-stat-label">Perhatian</div>
+                    </div>
+                    <div class="report-stat">
+                        <div class="report-stat-value">${dangerCount}</div>
+                        <div class="report-stat-label">Kritis</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateChart() {
+            if (!chartBars) return;
+            const maxScore = 100;
+            const maxHeight = 140;
+            
+            chartBars.innerHTML = reportData.map(item => {
+                const height = Math.max(10, (item.score / maxScore) * maxHeight);
+                const barClass = item.status;
+                return `
+                    <div class="chart-bar-group">
+                        <div class="chart-bar-value">${item.score}</div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar ${barClass}" style="height: ${height}px;"></div>
+                        </div>
+                        <div class="chart-bar-label">${item.region.split(' ')[0]}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Animate bars
+            setTimeout(() => {
+                document.querySelectorAll('.chart-bar').forEach(bar => {
+                    const height = bar.style.height;
+                    bar.style.height = '0px';
+                    setTimeout(() => bar.style.height = height, 50);
+                });
+            }, 100);
+        }
+
+        function generateInsights() {
+            if (!insightsSection) return;
+            
+            insightsSection.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <div class="insight-icon ${insight.type}">
+                        ${getInsightIcon(insight.type)}
+                    </div>
+                    <div class="insight-content">
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-desc">${insight.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getInsightIcon(type) {
+            const icons = {
+                success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+                danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+                info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+            };
+            return icons[type] || icons.info;
+        }
+
+        function generateReportCards() {
+            if (!reportGrid) return;
+            
+            reportGrid.innerHTML = metricCards.map(card => `
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <span class="report-card-title">${card.title}</span>
+                        <span class="report-card-badge badge-${card.badge}">${card.badge === 'success' ? 'Normal' : 'Perhatian'}</span>
+                    </div>
+                    <div class="report-card-value">${card.value}<span class="report-card-unit">${card.unit}</span></div>
+                    <div class="report-card-change ${card.positive ? 'change-positive' : 'change-negative'}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            ${card.positive ? '<polyline points="18 15 12 9 6 15"/>' : '<polyline points="6 9 12 15 18 9"/>'}
+                        </svg>
+                        ${card.change} dari sebelumnya
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function generateReportTable() {
+            if (!reportTableBody) return;
+            
+            reportTableBody.innerHTML = reportData.map(row => `
+                <tr>
+                    <td class="table-region">${row.region}</td>
+                    <td>
+                        <div class="score-cell">
+                            <span style="font-family: 'Space Grotesk'; font-weight: 700; color: var(--${row.status === 'success' ? 'success' : row.status === 'warning' ? 'warning' : 'danger'});">${row.score}</span>
+                            <div class="score-mini-bar">
+                                <div class="score-mini-fill" style="width: ${row.score}%; background: var(--${row.status === 'success' ? 'success' : row.status === 'warning' ? 'warning' : 'danger'});"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="table-status">
+                            <span class="status-dot ${row.status}"></span>
+                            ${getScoreLabel(row.status)}
+                        </span>
+                    </td>
+                    <td style="color: var(--fg-secondary); font-size: 0.9rem;">${row.note}</td>
+                </tr>
+            `).join('');
+        }
+
+        function generateRecommendations() {
+            if (!recommendationsContainer) return;
+            
+            recommendationsContainer.innerHTML = recommendations.map(rec => `
+                <div class="recommendation-card ${rec.priority}">
+                    <div class="recommendation-header">
+                        <div class="recommendation-icon">
+                            ${rec.priority === 'urgent' ? '<svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' : 
+                              rec.priority === 'warning' ? '<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>' :
+                              '<svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'}
+                        </div>
+                        <div class="recommendation-title">${rec.title}</div>
+                    </div>
+                    <div class="recommendation-text">${rec.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // ========== INITIALIZATION ==========
+        function init() {
+            generateReportSummary();
+            generateChart();
+            generateInsights();
+            generateReportCards();
+            generateReportTable();
+            generateRecommendations();
+            selectPoint('head');
+        }
+
+        // Run initialization
+        init();
+    </script>
+</body>
+</html>
+
+
+
+

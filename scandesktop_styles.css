@@ -1,0 +1,375 @@
+/* =========================
+   RESET DASAR
+========================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+}
+
+/* =========================
+   CONTAINER APP
+========================= */
+.app-container {
+    width: 100%;
+    max-width: 450px;
+    min-height: 100vh;
+    background-color: #a0e0ff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   DISPLAY SECTION
+========================= */
+.meter-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.meter-title {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* subtitle (opsional) */
+.meter-subtitle {
+    font-size: 12px;
+    color: #555;
+    margin-top: 4px;
+    margin-bottom: 6px;
+}
+
+.measurement-value {
+    font-size: 60px;
+    font-weight: 700;
+    margin: 10px 0 10px 0;
+    color: #2c3e50;
+}
+
+/* =========================
+   KETERANGAN ARAH
+========================= */
+.direction-labels {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   ARC METER
+========================= */
+.meter-arc-container {
+    position: relative;
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.meter-arc {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 3px solid #444;
+    border-color: #444 #444 transparent #444;
+}
+
+/* Scale Lines */
+.scale-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    background: #444;
+    transform: translate(-50%, -50%) rotate(var(--i)) translateY(140px);
+}
+
+.scale-line.major {
+    height: 20px;
+}
+
+/* Labels */
+.scale-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.scale-labels .label-pos {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    transform: translate(-50%, -50%) rotate(var(--i)) translateY(115px) rotate(calc(var(--i) * -1));
+}
+
+/* Needle */
+.meter-needle {
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    width: 4px;
+    height: 110px;
+    background: #c0392b; /* merah medis */
+    transform-origin: top center;
+    transform: rotate(0deg);
+    transition: transform 0.25s ease-out;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.action-buttons-main {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-button {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.action-button:hover {
+    transform: scale(1.05);
+}
+
+.action-button.large {
+    padding: 12px 20px;
+    width: 100%;
+    max-width: 240px;
+}
+
+.action-button.small {
+    padding: 8px 16px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.action-button.small:hover {
+    opacity: 1;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 450px;
+    margin: auto;
+    height: 70px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* NAV ITEM */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 12px;
+    color: #888;
+    position: relative;
+    width: 80px;
+}
+
+/* ICON WRAPPER */
+.nav-icon-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ICON */
+.nav-icon {
+    font-size: 24px;
+}
+
+/* LOCK ICON */
+.lock-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    background: white;
+    border-radius: 50%;
+    padding: 2px;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+/* LOCKED STATE */
+.nav-item.locked {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* UNLOCKED STATE */
+.nav-item.unlocked {
+    color: #007bff;
+    text-shadow: 0 0 8px rgba(0,123,255,0.6);
+}
+
+/* UNLOCK ANIMATION */
+.unlocking {
+    animation: unlockAnim 0.5s ease forwards;
+}
+
+@keyframes unlockAnim {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+}
+
+/* =========================
+   RESULT PANEL
+========================= */
+.result-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    padding: 25px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.4s ease;
+    z-index: 999;
+}
+
+.result-panel.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.result-panel h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.result-angle {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.result-status {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.result-close {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.result-close:hover {
+    transform: scale(1.05);
+}
+
+/* =========================
+   STATUS WARNA DINAMIS
+========================= */
+.result-status.normal {
+    color: #28a745;
+}
+
+.result-status.warning {
+    color: #ffc107;
+}
+
+.result-status.danger {
+    color: #dc3545;
+}
+
+/* =========================
+   LANDSCAPE OPTIMIZATION
+========================= */
+@media screen and (orientation: landscape) {
+
+    .meter-arc-container {
+        width: 350px;
+        height: 170px;
+    }
+
+    .meter-arc {
+        width: 350px;
+        height: 350px;
+    }
+
+    .meter-needle {
+        height: 130px;
+        top: 120px;
+    }
+
+    .measurement-value {
+        font-size: 70px;
+    }
+
+    .direction-labels {
+        width: 350px;
+    }
+}

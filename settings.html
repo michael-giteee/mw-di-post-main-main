@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Reminder</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Pengaturan Reminder</h2>
+        <p class="subtitle">Atur pengingat untuk menjaga postur yang baik</p>
+
+        <div class="setting-item">
+            <div class="text-group">
+                <span class="label">Posture Reminder</span>
+                <span class="description">Pengingat cek postur berkala</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="postureToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <div class="text-group">
+                <span class="label">Frekuensi Reminder</span>
+                <span class="description" id="freqLabel">Setiap 30 menit</span>
+            </div>
+            <select id="frequencySelect" class="dropdown">
+                <option value="15">15 menit</option>
+                <option value="30" selected>30 menit</option>
+                <option value="60">60 menit</option>
+            </select>
+        </div>
+
+        <div class="setting-item">
+            <div class="text-group">
+                <span class="label">Latihan Harian</span>
+                <span class="description">Reminder latihan rutin</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="exerciseToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="logout-section">
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Keluar
+            </button>
+        </div>
+    </div>
+
+
+
+   <nav class="bottom-navbar">
+    <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+    </a>
+    <a href="programlatihan.html" class="nav-item">
+        <span class="nav-icon">🏃</span>
+        <span class="nav-label">Latihan</span>
+    </a>
+    <a href="ai.html" class="nav-item">
+        <span class="nav-icon">🤖</span>
+        <span class="nav-label">AI</span>
+    </a>
+    <a href="scoliometer.html" class="nav-item">
+        <span class="nav-icon">📏</span>
+        <span class="nav-label">Scoliometer</span>
+    </a>
+    <a href="settings.html" class="nav-item active">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Settings</span>
+    </a>
+</nav>
+    
+
+    <script src="settings.js"></script>
+</body>
+</html>
+
+
+
+

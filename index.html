@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoSe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+        <div class="page-container page-register">
+        <div class="language-switcher">
+            <select id="languageSelect">
+                <option value="id">Indonesia</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
+        <header class="header-register">
+            <h1>RepoSe</h1> 
+            <p data-i18n="tagline">Improve your posture, improve your life</p>
+        </header>
+
+    <form class="form-container" id="registerForm">
+        <label for="nama_lengkap" data-i18n="label_nama">Nama Lengkap</label>
+        <input type="text" id="nama_lengkap" placeholder="Masukkan Nama Lengkap">
+
+        <label for="email" data-i18n="label_email">Email</label>
+        <input type="email" id="email" placeholder="Masukkan Email">
+
+        <label>Usia</label>
+        <input type="number" id="usia" placeholder="Masukkan usia" min="10" max="80" required>
+        
+        <button type="submit" class="btn-primary" data-i18n="btn_submit">
+            Mulai Perjalanan Postur
+        </button>
+    </form>
+</div>
+    
+
+    <script src="index.js"></script>
+
+</body>
+</html>

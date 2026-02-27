@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoliosis Meter - BodyScan</title>
+    <link rel="stylesheet" href="scandesktop_styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    
+    <main class="meter-display">
+
+        <div class="meter-title">Scoliosis Meter</div>
+
+        <!-- OPSIONAL: keterangan netral -->
+        <div class="meter-subtitle">
+            Posisi netral berada di tengah (0°)
+        </div>
+
+        <div class="measurement-value" id="valueDisplay">0</div>
+
+        <!-- KETERANGAN ARAH -->
+        <div class="direction-labels">
+            <span>KIRI</span>
+            <span>TENGAH (0)</span>
+            <span>KANAN</span>
+        </div>
+
+        <div class="meter-arc-container">
+            <div class="meter-arc">
+                <div class="scale-line" style="--i: -45deg;"></div>
+                <div class="scale-line" style="--i: -35deg;"></div>
+                <div class="scale-line" style="--i: -25deg;"></div>
+                <div class="scale-line major" style="--i: -15deg;"></div>
+                <div class="scale-line" style="--i: -5deg;"></div>
+                <div class="scale-line" style="--i: 5deg;"></div>
+                <div class="scale-line major" style="--i: 15deg;"></div>
+                <div class="scale-line" style="--i: 25deg;"></div>
+                <div class="scale-line" style="--i: 35deg;"></div>
+                <div class="scale-line" style="--i: 45deg;"></div>
+
+                <div class="meter-needle" id="meterNeedle"></div>
+            </div>
+
+            <div class="scale-labels">
+                <span class="label-pos" style="--i: -45deg;">-30</span>
+                <span class="label-pos" style="--i: -15deg;">-15</span>
+                <span class="label-pos" style="--i: 0deg;">0</span>
+                <span class="label-pos" style="--i: 15deg;">15</span>
+                <span class="label-pos" style="--i: 45deg;">30</span>
+            </div>
+        </div>
+
+        <!-- Tombol utama -->
+        <div class="action-buttons-main">
+            <button class="action-button large" id="startStopBtn">
+                MULAI PENGUKURAN
+            </button>
+
+            <button class="action-button large" id="pauseBtn" style="display:none;">
+                SELESAI
+            </button>
+
+            <!-- TOMBOL RESET (VISUAL SAJA, AMAN) -->
+            <button class="action-button small" id="resetBtn">
+                RESET
+            </button>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel" id="resultPanel">
+            <h2>HASIL ANALISIS</h2>
+            <div class="result-angle" id="finalAngle">0°</div>
+            <div class="result-status" id="resultStatus"></div>
+            <button class="result-close" id="closeResult">TUTUP</button>
+        </div>
+
+    </main>
+
+    <!-- 🔥 Bottom Navigation -->
+    <nav class="bottom-nav">
+
+        <a href="#" id="homeBtn" class="nav-item locked">
+            <div class="nav-icon-wrapper">
+                <span class="nav-icon">🏠</span>
+                <span class="lock-icon" id="lockIcon">🔒</span>
+            </div>
+            <span>Home</span>
+        </a>
+
+        <!-- BODY SCAN -->
+        <a href="bodyscan-flow.html" id="bodyScanBtn" class="nav-item">
+            <div class="nav-icon-wrapper">
+                <span class="nav-icon">🧍</span>
+            </div>
+            <span>Body Scan</span>
+        </a>
+
+    </nav>
+</div>
+
+<script src="bodyscan.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Latihan Inti</title>
+    <link rel="stylesheet" href="programlatihan.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <section id="day-list-view">
+            <header class="header list-header">
+                <a href="dashboard.html" class="back-btn list-back-btn">&#x2190;</a> 
+                <div class="header-content">
+                    <h1></h1>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 20%;"></div> 
+                    </div>
+                    <p class="days-remaining">29 hari tersisa</p>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div class="week-header">
+                    <span class="flag-icon">🚩</span>
+                    <h2>MINGGU 1</h2>
+                    <span class="progress-count">1/7</span>
+                </div>
+                
+                <ul class="day-list">
+                    <li class="day-item completed" data-day="1">
+                        <div class="day-details">
+                            <span class="day-number">Hari 1</span>
+                            <span class="day-info">Selesai</span>
+                        </div>
+                        <span class="check-icon">&#10003;</span>
+                    </li>
+
+                    <li class="day-item active" data-day="2">
+                        <div class="day-details">
+                            <span class="day-number">Hari 2</span>
+                            <span class="day-info">15 Latihan</span>
+                        </div>
+                        <button class="start-btn" data-day="2">Mulai</button>
+                    </li>
+
+                    <li class="day-item" data-day="3">
+                        <div class="day-details">
+                            <span class="day-number">Hari 3</span>
+                            <span class="day-info">15 Latihan</span>
+                        </div>
+                        <button class="start-btn normal-day-btn" data-day="3">Mulai</button>
+                    </li>
+
+                    <li class="day-item" data-day="4">
+                        <div class="day-details">
+                            <span class="day-number">Hari 4</span>
+                            <span class="day-info">14 Latihan</span> 
+                        </div>
+                        <button class="start-btn normal-day-btn" data-day="4">Mulai</button>
+                    </li>
+
+                    <li class="day-item rest-day" data-day="5">
+                        <div class="day-details">
+                            <span class="day-number">Hari 5</span>
+                            <span class="day-info">Istirahat</span>
+                        </div>
+                        <button class="start-btn rest-day-btn" data-day="5">Istirahat</button>
+                    </li>
+                    
+                    <li class="day-item" data-day="6">
+                        <div class="day-details">
+                            <span class="day-number">Hari 6</span>
+                            <span class="day-info">15 Latihan</span>
+                        </div>
+                        <button class="start-btn normal-day-btn" data-day="6">Mulai</button>
+                    </li>
+
+                    <li class="day-item" data-day="7">
+                        <div class="day-details">
+                            <span class="day-number">Hari 7</span>
+                            <span class="day-info">15 Latihan</span>
+                        </div>
+                        <button class="start-btn normal-day-btn" data-day="7">Mulai</button>
+                    </li>
+                </ul>
+                </main>
+        </section> 
+    </div>
+    <script src="programlatihan.js"></script> 
+    
+</body>
+</html>

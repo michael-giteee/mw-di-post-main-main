@@ -1,0 +1,213 @@
+:root {
+    --primary-pink: #ff4081; 
+    --light-pink-bg: #6a11cb; 
+    --text-dark: #fff;
+    --text-light: #fff;
+    --background-gray: #f9f9f9;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px; 
+    min-height: 100vh;
+    background-color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.header {
+    background-color: var(--light-pink-bg); 
+    color: var(--text-dark);
+    position: relative;
+    overflow: hidden;
+    padding: 20px 20px 100px 20px;
+    background-image: url('ilustrasi_latihan_header.png'); 
+    background-size: cover;
+    background-position: center bottom;
+}
+
+.list-header {
+    color: var(--text-dark);
+    padding: 20px 20px 100px 20px;
+}
+
+.back-btn {
+    font-size: 40px;
+    text-decoration: none;
+    color: var(--text-dark); /* Panah Hitam */
+    padding: 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.header-content h1 {
+    font-size: 28px;
+    margin: 0 0 5px 0;
+    font-weight: 700;
+}
+
+.days-remaining {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.progress-bar-container {
+    height: 4px;
+    width: 100px; 
+    background-color: rgba(255, 64, 129, 0.2); 
+    border-radius: 2px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-pink);
+    border-radius: 2px;
+}
+
+.main-content {
+    padding: 0 20px;
+    margin-top: -60px; 
+    background-color: white;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    position: relative;
+    z-index: 20;
+}
+
+.week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 30px 0 10px 0;
+}
+
+.week-header h2 {
+    font-size: 18px;
+    flex-grow: 1;
+    margin: 0;
+    font-weight: 700;
+    color: var(--primary-pink);
+}
+
+.flag-icon {
+    font-size: 16px;
+    margin-right: 5px;
+    color: var(--primary-pink);
+}
+
+.progress-count {
+    color: var(--primary-pink);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.day-list {
+    list-style: none;
+    padding: 0;
+}
+
+.day-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 12px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+}
+
+.day-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.day-number {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-dark);
+}
+
+.day-info {
+    font-size: 14px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.day-item.completed {
+    background-color: white;
+}
+
+.day-item.completed .day-info {
+    color: #666;
+}
+
+.check-icon {
+    color: white;
+    background-color: var(--primary-pink);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+.day-item.active {
+    background-color: var(--primary-pink);
+    color: white;
+    padding: 25px 20px;
+    box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+}
+
+.day-item.active .day-number,
+.day-item.active .day-info {
+    color: white;
+}
+
+.day-item .start-btn {
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px; 
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    width: 110px; 
+    height: 50px;
+}
+
+.day-item.active .start-btn {
+    background-color: white;
+    color: var(--primary-pink);
+}
+
+.day-item .normal-day-btn {
+    background-color: white; 
+    color: var(--primary-pink);
+    opacity: 0.8; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.day-item.rest-day .rest-day-btn {
+    background-color: white; 
+    color: #999; 
+    font-weight: 500;
+    opacity: 0.8;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+

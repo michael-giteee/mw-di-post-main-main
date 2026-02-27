@@ -1,0 +1,121 @@
+/* RESET DAN FONT */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f9; /* Latar belakang abu-abu muda */
+    color: #333;
+    line-height: 1.6;
+}
+
+.main-header {
+    background-color: #007bff; /* Biru cerah sebagai warna utama */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.main-header h1 {
+    font-size: 2.2em;
+    margin-bottom: 5px;
+}
+
+.content-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.content-container h2 {
+    color: #007bff;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.description {
+    margin-bottom: 30px;
+    color: #666;
+    font-size: 1.1em;
+}
+
+/* GRID KATEGORI (Inti dari index.html) */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive Grid */
+    gap: 25px;
+}
+
+.category-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none; /* Hapus garis bawah link */
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.category-card .icon {
+    font-size: 3em;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.category-card h3 {
+    color: #333;
+    font-size: 1.4em;
+    margin-bottom: 10px;
+}
+
+.category-card p {
+    color: #999;
+    font-size: 0.9em;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+    height: 5px;
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    margin-top: 15px;
+    /* Contoh progres (atur via JS) */
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%; /* Ganti dengan persentase progres aktual */
+    background-color: #28a745; /* Hijau untuk progres */
+    border-radius: 3px;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
