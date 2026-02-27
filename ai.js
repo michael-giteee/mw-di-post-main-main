@@ -1,12 +1,7 @@
 // ===============================
-// 🔐 CEK AKSES (WAJIB SUDAH ISI DATA)
+// AI RepoSe Assistant
+// Versi: TANPA VALIDASI AKSES
 // ===============================
-const isRegistered = localStorage.getItem("isRegistered");
-
-if (!isRegistered) {
-    alert("Silakan isi data terlebih dahulu!");
-    window.location.href = "index.html";
-}
 
 // ===============================
 // SETUP AWAL
@@ -32,10 +27,15 @@ function mapValueToRotation(value) {
 
 function updateDisplay(newValue) {
     const displayValue = Math.round(newValue);
-    valueDisplay.textContent = displayValue;
 
-    const rotation = mapValueToRotation(displayValue);
-    meterNeedle.style.transform = `rotate(${rotation}deg)`;
+    if (valueDisplay) {
+        valueDisplay.textContent = displayValue;
+    }
+
+    if (meterNeedle) {
+        const rotation = mapValueToRotation(displayValue);
+        meterNeedle.style.transform = `rotate(${rotation}deg)`;
+    }
 }
 
 // ===============================
@@ -44,8 +44,8 @@ function updateDisplay(newValue) {
 function startMeasurement() {
     isMeasuring = true;
 
-    startStopBtn.style.display = "none";
-    pauseBtn.style.display = "inline-block";
+    if (startStopBtn) startStopBtn.style.display = "none";
+    if (pauseBtn) pauseBtn.style.display = "inline-block";
 
     intervalId = setInterval(() => {
         const newValue =
@@ -60,10 +60,10 @@ function pauseMeasurement() {
     clearInterval(intervalId);
     intervalId = null;
 
-    pauseBtn.style.display = "none";
-    startStopBtn.style.display = "inline-block";
+    if (pauseBtn) pauseBtn.style.display = "none";
+    if (startStopBtn) startStopBtn.style.display = "inline-block";
 
-    // ✅ SIMPAN STATUS SUDAH MELAKUKAN PENGUKURAN
+    // Simpan status (opsional)
     localStorage.setItem("hasMeasured", "true");
 }
 
@@ -73,18 +73,20 @@ function resetMeasurement() {
     clearInterval(intervalId);
     intervalId = null;
 
-    pauseBtn.style.display = "none";
-    startStopBtn.style.display = "inline-block";
+    if (pauseBtn) pauseBtn.style.display = "none";
+    if (startStopBtn) startStopBtn.style.display = "inline-block";
 
     updateDisplay(0);
 }
 
 // ===============================
-// Event Listeners
+// Event Listeners (AMAN)
 // ===============================
-startStopBtn.addEventListener('click', startMeasurement);
-pauseBtn.addEventListener('click', pauseMeasurement);
-resetBtn.addEventListener('click', resetMeasurement);
+if (startStopBtn) startStopBtn.addEventListener('click', startMeasurement);
+if (pauseBtn) pauseBtn.addEventListener('click', pauseMeasurement);
+if (resetBtn) resetBtn.addEventListener('click', resetMeasurement);
 
-// Tampilan awal
+// ===============================
+// Tampilan Awal
+// ===============================
 updateDisplay(0);
